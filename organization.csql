@@ -59,6 +59,8 @@ from (
     where ranking = 1
 )
 
+-- Comentario de teste
+
 -- Field name convertion:
 -- "-" to "_"
 -- example: cod-empresa to cod_empresa
