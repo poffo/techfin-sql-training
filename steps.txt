@@ -1,0 +1,5 @@
+
+organization: training
+tenant: techfinsqltraining
+usuario: email@totvs.com.br
+senha: 

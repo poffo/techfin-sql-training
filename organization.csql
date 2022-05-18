@@ -1,0 +1,64 @@
+with organization as (
+    select 
+        stg.uuid as uuid,
+        stg.name as name,
+        stg.alias as alias,
+        stg.federalid as federalid,
+        stg.mdmCounterForEntity as _counter
+        --metadata--
+    from stg_protheus_carol_organization stg
+    --timestamp-- WHERE stg.mdmCounterForEntity > {{start_from}}
+),
+company as (
+    select 
+        stg.uuid as uuid,
+        stg.description as name,
+        stg.description as alias,
+        (select t.federalId from stg_protheus_carol_organization t where t.mdmTenantId = stg.mdmtenantId and t.uuid = stg.uuid) as federalid,
+        stg.mdmCounterForEntity as _counter
+        --metadata--
+    from stg_protheus_carol_company stg
+    inner join stg_protheus_carol_organization t on t.mdmTenantId = stg.mdmtenantId and t.uuid = stg.uuid
+    --timestamp-- WHERE stg.mdmCounterForEntity > {{start_from}}
+),
+company_inverso as (
+    select 
+        stg.uuid as uuid,
+        stg.description as name,
+        stg.description as alias,
+        (select t.federalId from stg_protheus_carol_organization t where t.mdmTenantId = stg.mdmtenantId and t.uuid = stg.uuid) as federalid,
+        stg.mdmCounterForEntity as _counter
+        --metadata--
+    from stg_protheus_carol_company stg
+    where uuid in (
+        select UUID
+        from stg_protheus_carol_organization stg
+    --timestamp-- WHERE stg.mdmCounterForEntity > {{start_from}}
+
+    )
+    --timestamp-- AND stg.mdmCounterForEntity > {{start_from}}
+),
+organization_company as (
+    select * from organization
+    union all
+    select * from company
+    union all
+    select * from company_inverso
+)
+
+select * except(_counter, ranking),
+--`labs-app-mdm-production.a_techfin`.hash(uuid, uuid),
+(
+    (uuid is null) or (uuid = '')
+) mdmDeleted
+from (
+    select * from (
+        select *, row_number() over (partition by uuid ORDER BY _counter DESC) ranking
+        from organization_company
+    )
+    where ranking = 1
+)
+
+-- Field name convertion:
+-- "-" to "_"
+-- example: cod-empresa to cod_empresa

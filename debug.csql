@@ -1,0 +1,4 @@
+
+select *
+from `tt_temp_task_mdcurrency_2022-03-*`
+where currency_id='d33c06292371fc9c13dd7c3257531644'
