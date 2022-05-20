@@ -60,6 +60,7 @@ from (
 )
 
 -- Comentario de teste
+-- fazendo um teste de commit.
 
 -- Field name convertion:
 -- "-" to "_"
