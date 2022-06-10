@@ -56,9 +56,10 @@ from (
         select *, row_number() over (partition by uuid ORDER BY _counter DESC) ranking
         from organization_company
     )
-    where ranking = 1
+    where ranking = 1 and error
 )
 
+-- fghfghgfh
 -- Comentario de teste
 -- fazendo um teste de commit.
 
