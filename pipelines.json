@@ -29,7 +29,7 @@
             [
                 ""
             ],
-            "processScript": "organizationnnn.csql",
+            "processScript": "organization.csql",
             "sourceEntities":
             {
                 "dataModels":
